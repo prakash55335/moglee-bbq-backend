@@ -1,7 +1,3 @@
-
-
-
-
 import os
 import dj_database_url
 from config.settings.base import *
@@ -20,9 +16,9 @@ ALLOWED_HOSTS = [
 # This block pulls the live database from Railway securely
 DATABASES = {
     'default': dj_database_url.config(
-        default=config('DATABASE_URL'),
+        default=os.environ.get('DATABASE_URL'),
         conn_max_age=600,
-        conn_health_checks=True,
+        ssl_require=True
     )
 }
 
