@@ -5,18 +5,17 @@ from apps.menu.models import MenuItem
 
 class Order(models.Model):
     STATUS_CHOICES = [
-        ('pending',   'Pending'),
-        ('preparing', 'Preparing'),
+        ('kot',       'KOT'),
         ('ready',     'Ready'),
         ('billed',    'Billed'),
     ]
 
     table         = models.ForeignKey(RestaurantTable, on_delete=models.CASCADE, related_name='orders')
-    status        = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    status        = models.CharField(max_length=20, choices=STATUS_CHOICES, default='kot')
     total_amount  = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     customer_note = models.TextField(blank=True, default='')
-    customer_name = models.CharField(max_length=100, blank=True, default='')   # ← NEW
-    customer_phone = models.CharField(max_length=15, blank=True, default='')   # ← NEW
+    customer_name = models.CharField(max_length=100, blank=True, default='')
+    customer_phone = models.CharField(max_length=15, blank=True, default='')
     created_at    = models.DateTimeField(auto_now_add=True)
     updated_at    = models.DateTimeField(auto_now=True)
 
