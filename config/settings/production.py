@@ -1,5 +1,4 @@
 import os
-import dj_database_url
 from config.settings.base import *
 from decouple import config
 
@@ -13,11 +12,16 @@ ALLOWED_HOSTS = [
     '*',
 ]
 
-# Hardcoding your correct encoded Supabase pooler link directly so it never fails
+# Explicit database configuration completely bypassing external parser libraries
 DATABASES = {
-    'default': dj_database_url.parse(
-        'postgresql://postgres.qkwvpflnrwtfufmlwpcx:Prakash5533%2AMoglee%23DB@://supabase.com'
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres.qkwvpflnrwtfufmlwpcx',
+        'PASSWORD': 'Prakash5533*Moglee#DB',
+        'HOST': '://supabase.com',
+        'PORT': '6543',
+    }
 }
 
 CORS_ALLOW_ALL_ORIGINS = True
