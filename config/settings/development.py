@@ -1,8 +1,21 @@
+import os
 from config.settings.base import *
 
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+
+# Explicit database configuration to prevent the connection crash
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres.qkwvpflnrwtfufmlwpcx',
+        'PASSWORD': 'Prakash5533*Moglee#DB',
+        'HOST': '://supabase.com',
+        'PORT': '6543',
+    }
+}
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
