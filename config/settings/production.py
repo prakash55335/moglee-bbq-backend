@@ -19,7 +19,7 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'postgres.qkwvpflnrwtfufmlwpcx',
         'PASSWORD': 'Prakash5533*Moglee#DB',
-        'HOST': '://supabase.com',
+        'HOST': 'aws-1-ap-southeast-1.pooler.supabase.com',
         'PORT': '6543',
     }
 }
