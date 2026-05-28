@@ -9,10 +9,11 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 username = "admin"
-password = "YourPermanentCloudPassword123"  # Set your desired admin password here
+password = "YourPermanentCloudPassword123"  # Write your desired login password here
 
 if not User.objects.filter(username=username).exists():
-    User.objects.create_superuser(username=username, email='', password=password)
+    # Removed the email parameter entirely to match your custom model rules
+    User.objects.create_superuser(username=username, password=password)
     print("🚀 Cloud Admin created successfully with Custom User Model!")
 else:
     print("✅ Admin account is already configured.")
