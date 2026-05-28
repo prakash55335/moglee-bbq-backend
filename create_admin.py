@@ -4,13 +4,15 @@ import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.production')
 django.setup()
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 username = "admin"
-password = "YourPermanentCloudPassword123"  # Change this to your desired password!
+password = "YourPermanentCloudPassword123"  # Set your desired admin password here
 
 if not User.objects.filter(username=username).exists():
     User.objects.create_superuser(username=username, email='', password=password)
-    print("🚀 Superuser created successfully inside cloud container!")
+    print("🚀 Cloud Admin created successfully with Custom User Model!")
 else:
     print("✅ Admin account is already configured.")
