@@ -13,12 +13,10 @@ ALLOWED_HOSTS = [
     '*',
 ]
 
-# This block pulls the live database from Railway securely
+# Hardcoding your correct encoded Supabase pooler link directly so it never fails
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
-        conn_max_age=600,
-        ssl_require=True
+    'default': dj_database_url.parse(
+        'postgresql://postgres.qkwvpflnrwtfufmlwpcx:Prakash5533%2AMoglee%23DB@://supabase.com'
     )
 }
 
