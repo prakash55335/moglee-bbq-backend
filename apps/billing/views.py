@@ -91,10 +91,12 @@ class TodayBillsView(APIView):
     def get(self, request):
         today = timezone.now().date()
         bills = Bill.objects.filter(
-            created_at__date=today
+            created_at__date=today,
+            is_paid=True  # 👈 ADD THIS FILTER LINE HERE
         ).select_related('order__table').prefetch_related(
             'order__items__menu_item'
         ).order_by('created_at')
+        
         return Response({
             'success': True,
             'data':    BillSerializer(bills, many=True).data
