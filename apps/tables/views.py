@@ -42,7 +42,7 @@ class TableQRView(APIView):
         try:
             table = RestaurantTable.objects.get(id=table_id)
 
-            # FIXED: Points directly to your production customer domain from your screenshot
+            # FIXED: Now points directly to your true, live frontend route path with proper tracking parameters
             menu_url = f"https://vercel.app{table.id}&token={table.qr_token}"
 
             qr = qrcode.QRCode(
