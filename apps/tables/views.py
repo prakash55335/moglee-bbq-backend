@@ -7,19 +7,6 @@ from .models import RestaurantTable
 from .serializers import RestaurantTableSerializer
 import qrcode
 import io
-import socket
-
-
-def get_local_ip():
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8", 80))
-        ip = s.getsockname()[0]
-        s.close()
-        return ip
-    except:
-        return '127.0.0.1'
-
 
 class TableListView(APIView):
     permission_classes = [IsAuthenticated]
@@ -55,8 +42,8 @@ class TableQRView(APIView):
         try:
             table = RestaurantTable.objects.get(id=table_id)
 
-            ip = get_local_ip()
-            menu_url = f"http://{ip}:5173/menu?tableId={table.id}&token={table.qr_token}"
+            # FIXED: Points directly to your production customer domain from your screenshot
+            menu_url = f"https://vercel.app{table.id}&token={table.qr_token}"
 
             qr = qrcode.QRCode(
                 version=1,
