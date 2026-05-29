@@ -157,3 +157,17 @@ class TaxSettingsView(APIView):
                 'enabled': tax.is_gst_enabled,
             }
         })
+    
+
+    # In your billing views.py
+class CompleteBillView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, bill_id):
+        try:
+            bill = Bill.objects.get(id=bill_id)
+            bill.is_paid = True  # or bill.status = 'completed'
+            bill.save()
+            return Response({'success': True})
+        except Bill.DoesNotExist:
+            return Response({'success': False, 'message': 'Bill not found'}, status=404)
