@@ -42,8 +42,8 @@ class TableQRView(APIView):
         try:
             table = RestaurantTable.objects.get(id=table_id)
 
-            # FIXED: Now points directly to your true, live frontend route path with proper tracking parameters
-            menu_url = f"https://vercel.app{table.id}&token={table.qr_token}"
+            # CORRECT: Full Vercel domain + proper route + both query parameters
+            menu_url = f"https://mogleqrmenu-frontend.vercel.app/menu?tableId={table.id}&token={table.qr_token}"
 
             qr = qrcode.QRCode(
                 version=1,
