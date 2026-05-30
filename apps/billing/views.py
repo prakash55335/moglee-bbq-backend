@@ -49,8 +49,7 @@ class GenerateBillView(APIView):
             grand_total  = grand_total
         )
 
-        order.status = 'billed'
-        order.save()
+ 
 
         return Response({
             'success': True,
@@ -93,9 +92,18 @@ class CompleteBillView(APIView):
             bill = Bill.objects.get(id=bill_id)
             bill.is_paid = True
             bill.save()
+
+            # ✅ NOW mark order as billed only when Print Bill is clicked
+            order = bill.order
+            order.status = 'billed'
+            order.save()
+
             return Response({'success': True})
         except Bill.DoesNotExist:
-            return Response({'success': False, 'message': 'Bill not found'}, status=404)
+            return Response(
+                {'success': False, 'message': 'Bill not found'},
+                status=404
+            )
 
 
 class TodayBillsView(APIView):
