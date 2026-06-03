@@ -17,7 +17,6 @@ class GenerateBillView(APIView):
     def post(self, request, order_id):
         order = get_object_or_404(Order, id=order_id)
 
-        # Return existing bill if already generated
         existing = Bill.objects.filter(order=order).first()
         if existing:
             return Response({
@@ -26,9 +25,8 @@ class GenerateBillView(APIView):
                 'data':    BillSerializer(existing).data
             })
 
-        # Get current tax settings from DB
-        tax       = TaxSettings.get_active()
-        total     = order.total_amount
+        tax   = TaxSettings.get_active()
+        total = order.total_amount
 
         if tax.is_gst_enabled:
             cgst_rate = tax.cgst_percent / Decimal('100')
@@ -48,8 +46,6 @@ class GenerateBillView(APIView):
             sgst         = sgst,
             grand_total  = grand_total
         )
-
- 
 
         return Response({
             'success': True,
@@ -85,20 +81,35 @@ class MarkPaidView(APIView):
 
 
 class CompleteBillView(APIView):
+    """
+    Called when admin clicks Print Bill.
+    - Saves the frontend grand_total (with tax) to DB
+    - Marks bill as paid → appears in Bills Today
+    - Marks order as billed → disappears from Ready for Billing
+    """
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, bill_id):
         try:
             bill = Bill.objects.get(id=bill_id)
+
+            # Save grand_total sent from frontend (includes tax calculated on frontend)
+            grand_total = request.data.get('grand_total')
+            if grand_total is not None:
+                bill.grand_total = Decimal(str(grand_total))
+
             bill.is_paid = True
             bill.save()
 
-            # ✅ NOW mark order as billed only when Print Bill is clicked
-            order = bill.order
+            # Mark order as billed → removes from Ready for Billing list
+            order        = bill.order
             order.status = 'billed'
             order.save()
 
-            return Response({'success': True})
+            return Response({
+                'success':     True,
+                'grand_total': str(bill.grand_total)
+            })
         except Bill.DoesNotExist:
             return Response(
                 {'success': False, 'message': 'Bill not found'},
@@ -113,11 +124,11 @@ class TodayBillsView(APIView):
         today = timezone.now().date()
         bills = Bill.objects.filter(
             created_at__date=today,
-            is_paid=True
+            is_paid=True           # ✅ matches CompleteBillView which sets is_paid=True
         ).select_related('order__table').prefetch_related(
             'order__items__menu_item'
         ).order_by('created_at')
-        
+
         return Response({
             'success': True,
             'data':    BillSerializer(bills, many=True).data
@@ -145,8 +156,8 @@ class TaxSettingsView(APIView):
     def patch(self, request):
         tax = TaxSettings.get_active()
 
-        cgst    = request.data.get('cgst', tax.cgst_percent)
-        sgst    = request.data.get('sgst', tax.sgst_percent)
+        cgst    = request.data.get('cgst',    tax.cgst_percent)
+        sgst    = request.data.get('sgst',    tax.sgst_percent)
         enabled = request.data.get('enabled', tax.is_gst_enabled)
 
         try:
